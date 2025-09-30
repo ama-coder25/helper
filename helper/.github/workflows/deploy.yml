@@ -1,0 +1,34 @@
+name: Deploy React App
+
+# Запускается при пуше в ветку main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Скачиваем репозиторий
+      - uses: actions/checkout@v3
+
+      # Настраиваем Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Устанавливаем зависимости
+      - run: npm install
+
+      # Собираем проект (Vite билд в папку dist)
+      - run: npm run build
+
+      # Деплой на GitHub Pages
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v5
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
